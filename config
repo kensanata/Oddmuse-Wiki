@@ -132,31 +132,3 @@ sub MyRules {
 );
 
 $QuestionaskerSecretKey = 'ham';
-
-# Google +1
-# *MyOldGetCommentForm=*GetCommentForm;
-# *GetCommentForm=*MyNewGetCommentForm;
-
-# sub MyNewGetCommentForm {
-#   return MyOldGetCommentForm(@_) . q{
-# <script type="text/javascript">
-# function loadScript(jssource,thelink) {
-#    var jsnode = document.createElement('script');
-#    jsnode.setAttribute('type','text/javascript');
-#    jsnode.setAttribute('src',jssource);
-#    document.getElementsByTagName('head')[0].appendChild(jsnode);
-#    document.getElementById(thelink).innerHTML = "";
-#  }
-#  var plus1source = "https://apis.google.com/js/plusone.js";
-# </script>
-# <a id="plus1" href="javascript:loadScript(plus1source,'plus1')">
-#   <img src="http://emacswiki.org/alex/pics/plusone-h24.png" alt="Show Google +1" />
-# </a>
-# <!-- <g:plusone></g:plusone> -->
-# <div class="g-plusone" id="my_plusone"></div>
-# <script type="text/javascript">
-#   document.getElementById("my_plusone").setAttribute("data-size", "medium");
-#   document.getElementById("my_plusone").setAttribute("data-href", document.location.href);
-# </script>
-# };
-# }
