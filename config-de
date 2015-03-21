@@ -1,0 +1,19 @@
+# -*- mode: cperl -*-
+use utf8;
+$RCName      = 'Letzte_Änderungen';
+$HomePage    = 'Übersicht';
+@UserGotoBarPages = ($HomePage, $RCName, 'News', 'Upgrading Issues', 'Errors', 'Source', 'Plans', 'Site Map');
+
+$FooterNote  = "Sie dürfen dieses Dokument unter der <a href=\"/FDL\">GNU Free Documentation License</a> Version 1.2 oder einer beliebigen späteren Version der <a href=\"http://www.fsf.org/\">Free Software Foundation</a> kopieren, verbreiten und/oder verändern.";
+$EditNote    = "<p>Bitte stellen sie sicher, dass sie nur eigene Beiträge hinzufügen, oder dass die Beiträge unter der <a href=\"/FDL\">GNU Free Documentation License</a> lizenziert wurden.<br>Leere Zeilen trennen Paragraphen.  Paragraphen können aus mehreren Zeilen bestehen.  Listeneinträge beginnen mit einem Asterix (‘*’).  Normale URLs werden verlinkt.  Worte in doppelten eckigen Klammern [[wie diesen hier]] werden zu lokalen Links.  Code Beispiele mit dreifachen, geschweiften Klammern:<br /><code>{{{<br />  code;<br />}}}</code></p>";
+$Translate{'http://www.amazon.com/exec/obidos/ISBN=%s'} = 'http://www.amazon.de/exec/obidos/ISBN=%s';
+$Translate{"This page is a translation of %s"}
+  = "Diese Seite ist eine Übersetzung von %s";
+$Translate{"The translation is up to date."}
+  = "Diese Seite ist auf dem aktuellen Stand.";
+$Translate{"The translation is outdated."}
+  = "Die Übersetzung ist nicht mehr auf dem neuesten Stand.";
+$Translate{"The page does not exist."}
+ = "Diese Seite existiert nicht.";
+$NewText = "Neue Seite bitte hier beschreiben.";
+$NewComment = "Neuen Kommentar bitte hier einfügen.";

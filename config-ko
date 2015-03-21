@@ -1,0 +1,6 @@
+# -*- mode: cperl -*-
+use utf8;
+$HomePage    = '대문';
+$RCName      = '최근_바뀜';
+$CommentsPrefix = '댓글 달기 ';
+@UserGotoBarPages = ($HomePage, $RCName, '새소식', 'Upgrading Issues', 'Source', 'Plans');

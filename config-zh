@@ -1,0 +1,5 @@
+# -*- mode: cperl -*-
+use utf8;
+$RCName      = '最近更新';
+$HomePage    = '網站地圖';
+@UserGotoBarPages = ($HomePage, $RCName, 'News', 'Upgrading Issues', 'Source', 'Plans');

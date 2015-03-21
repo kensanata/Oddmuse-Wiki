@@ -1,0 +1,162 @@
+# -*- mode: perl -*-
+umask(007);
+use utf8;
+do "$DataDir/password.pl";
+$ScriptName = 'http://oddmuse.org/wiki';
+$ENV{PATH} = '/bin:/usr/bin';
+$WikiLinks   = 0;
+$BracketWiki = 1;
+$NetworkFile = 0;
+$CommentsPrefix = 'Comments_on_';
+$BannedContent = 'Local Banned Content';
+# $StrangeBannedContent = 'Local_Strange_Banned_Content';
+$BannedHosts = 'Local Banned Hosts';
+push(@MyInitVariables, sub {
+       # delete $AdminPages{$BannedContent};
+       # delete $AdminPages{$BannedHosts};
+       $HtmlHeaders = '<link rel="alternate" '
+  . 'type="application/rss+xml" '
+  . 'title="RecentChanges" '
+  . 'href="http://oddmuse.org/wiki?action=rss" />'
+  . '<link rel="alternate" '
+  . 'type="application/rss+xml" '
+  . 'title="News" '
+  . 'href="http://oddmuse.org/wiki?action=journal" />'
+  . '<link rel="alternate" '
+  . 'type="application/rss+xml" '
+  . 'title="Referrers" '
+  . 'href="http://oddmuse.org/wiki?action=refer-rss" />'
+  . '<link rel="alternate" '
+  . 'type="application/atom+xml" '
+  . 'title="Source" '
+  . 'href="http://git.savannah.gnu.org/cgit/oddmuse.git/atom/?h=master" />';
+       # http://www.emacswiki.org/cgi-bin/changelog-to-rss?url=http://www.emacswiki.org/oddmuse/ChangeLog;pattern=http://savannah.nongnu.org/cgi-bin/viewcvs/oddmuse/oddmuse/
+       my $id = GetId();
+       $HtmlHeaders .= '<link rel="alternate" '
+  . 'type="application/rss+xml" '
+  . 'title="Changes for ' . NormalToFree($id) . '" '
+  . 'href="http://oddmuse.org/wiki?action=rss;match=%5E'
+  . UrlEncode(FreeToNormal($id)) . '%24" />' if $id;
+       my $username = GetParam('username', '');
+       $HtmlHeaders .= '<link rel="alternate" '
+  . 'type="application/rss+xml" '
+  . 'title="Follow-ups for ' . NormalToFree($username) . '" '
+  . 'href="http://oddmuse.org/wiki?action=rss;followup='
+  . UrlEncode($username) . '" />' if $username;
+       # toc-js.pl
+       $TocOutlineLibrary = '/outliner.0.5.0.62.js';
+       $HtmHeaders . TocScript();
+     });
+$InterMap = 'Local Intermap';
+$UploadAllowed = 1;
+push(@UploadTypes,'text/x-perl');
+push(@UploadTypes,'text/plain');
+$CookieName  = "Oddmuse";
+$SiteName    = "Oddmuse";
+$HomePage    = "Main_Page";
+$RCName      = "RecentChanges";
+$LogoUrl     = "http://www.oddmuse.org/pics/oddmuse-logo.png";
+$StyleSheet  = "http://oddmuse.org/css/oddmuse-2014.css";
+@UserGotoBarPages = ($HomePage, 'About', 'News', 'Upgrading Issues', 'Errors', 'Source', 'Plans', $RCName, 'Site Map');
+$UserGotoBar = '<a title="RSS 1.0" href="/wiki?action=rss"><span style="border:1px solid;border-color:#FC9 #630 #330 #F96;padding:0 3px;font:bold 10px verdana,sans-serif;color:#FFF;background:#F60;text-decoration:none;margin:0;">RSS</span></a>';
+
+$RcDefault   = 28;
+@RcDays      = qw(1 3 7 14 21 28);
+$KeepDays    = 28;
+
+$RefererTimeLimit = 60 * 60 * 24 * 7;
+
+$Smilies{quotemeta(':)')} = $Smilies{quotemeta(':-)')};
+$Smilies{quotemeta(':(')} = $Smilies{quotemeta(':-(')};
+
+$Action{new} = \&NewEntry;
+
+sub NewEntry {
+  my $id = shift;
+  my $time = time() - 4 * 3600;
+  my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday) = gmtime($time);
+  $today = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
+  $today .= " " . $id if $id;
+  return DoEdit($today);
+}
+
+$FooterNote  = "<p>Permission is granted to copy, distribute and/or modify this document under the terms of the <a href=\"http://www.emacswiki.org/FDL\">GNU Free Documentation License</a>, Version 1.3 or any later version published by the <a href=\"http://www.fsf.org/\">Free Software Foundation</a>.</p>";
+$EditNote    = "<p>Please make sure you contribute only your own work, or work licensed under the <a href=\"http://www.emacswiki.org/FDL\">GNU Free Documentation License</a>.</p>";
+
+$InterWikiMoniker = "Oddmuse";
+$SiteDescription  = "Documentation for the Oddmuse wiki engine.";
+$RssImageUrl      = "";
+$RssPublisher     = "Alex Schroeder";
+$RssContributor   = "Alex Schroeder and others.";
+$RssRights        = "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation.";
+
+# Pierre Gaston's translation rule
+# The "Option: ..." rule to make permanent anchors
+
+sub MyRules {
+  # all scripts start with # (not only #!) and patches with ***
+  if (pos == 0 and (m/\G#/gc or m/\GIndex: .*\n=+\n/gc)) {
+    pos = length($_); # fake matching entire file
+    return $q->pre({-class=>source}, $_);
+  } elsif (m/\G(Option: ([\%\@\$]|\&amp;)([a-zA-Z0-9]+)( +\((.*)\))?)/gc) {
+    my $dumbfragment;     #$fragment is set on return of this function
+    my ($prefix, $name, $desc) = ($2, $3, $5);
+    Dirty($1);
+    if ($desc) {
+      print $q->h2({-class=>'variable'}, $prefix . $name . ' ('
+		   . GetPermanentAnchor($desc) . ')');
+    } else {
+      print $q->h2({-class=>'variable'}, $prefix
+		   . GetPermanentAnchor($name));
+    }
+    return '';
+  } elsif (m/\G::/gc) {
+    return '::';
+  }
+  return undef;
+}
+
+%Languages = (
+     'en' => '\b(the|that|and|why|what)\b',
+     'de' => '\b(der|das|und|oder)\b',
+     'fr' => '\b(et|une|les|ou|est|je|avec|même)\b',
+     'es' => '((¡|¿)|(\b(por)\b))',
+     'ru' => '(т|р|а|н|ц|э|о|м|е|в|л|ы|ч|ж)',
+     'zh' => '(的|一|我|是|有|但|這|这|你|和|了|不|啊|要|好|沒)',
+     'pt' => '(ã|õ)',
+     'se' => '\b(är|från|för)\b',
+	     );
+
+@QuestionaskerQuestions = (
+  ['Type FRODO here: ' => sub { uc(shift) eq 'FRODO' }],
+);
+
+$QuestionaskerSecretKey = 'ham';
+
+# Google +1
+# *MyOldGetCommentForm=*GetCommentForm;
+# *GetCommentForm=*MyNewGetCommentForm;
+
+# sub MyNewGetCommentForm {
+#   return MyOldGetCommentForm(@_) . q{
+# <script type="text/javascript">
+# function loadScript(jssource,thelink) {
+#    var jsnode = document.createElement('script');
+#    jsnode.setAttribute('type','text/javascript');
+#    jsnode.setAttribute('src',jssource);
+#    document.getElementsByTagName('head')[0].appendChild(jsnode);
+#    document.getElementById(thelink).innerHTML = "";
+#  }
+#  var plus1source = "https://apis.google.com/js/plusone.js";
+# </script>
+# <a id="plus1" href="javascript:loadScript(plus1source,'plus1')">
+#   <img src="http://emacswiki.org/alex/pics/plusone-h24.png" alt="Show Google +1" />
+# </a>
+# <!-- <g:plusone></g:plusone> -->
+# <div class="g-plusone" id="my_plusone"></div>
+# <script type="text/javascript">
+#   document.getElementById("my_plusone").setAttribute("data-size", "medium");
+#   document.getElementById("my_plusone").setAttribute("data-href", document.location.href);
+# </script>
+# };
+# }
