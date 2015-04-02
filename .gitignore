@@ -16,3 +16,4 @@ spammer.log
 visitors.log
 password.pl
 permanentanchors
+modules/concat.pl
