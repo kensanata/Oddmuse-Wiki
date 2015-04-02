@@ -9,7 +9,7 @@ $BracketWiki = 1;
 $NetworkFile = 0;
 $CommentsPrefix = 'Comments_on_';
 $BannedContent = 'Local Banned Content';
-# $StrangeBannedContent = 'Local_Strange_Banned_Content';
+$BannedRegexps = 'Local Banned Regexps';
 $BannedHosts = 'Local Banned Hosts';
 push(@MyInitVariables, sub {
        # delete $AdminPages{$BannedContent};
