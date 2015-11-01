@@ -17,16 +17,18 @@ use strict;
 use v5.10;
 use utf8;
 
-package OddMuse;
+AddModuleDescription('pygmentize.pl', 'Pygmentize Extension', undef, '2.3.5-309-ga8920bf');
 
-AddModuleDescription('pygmentize.pl', 'Pygmentize Extension');
-
-our ($q, $bol, %RuleOrder, @MyRules);
+our ($q, $bol, @KnownLocks, %RuleOrder, @MyRules, $TempDir, @MyInitVariables);
 
 # You can push other stuff to that list.
 # For example: push @PygmentizeArgs, qw(-F whitespace:spaces=true,tabs=true)
 # If you want to change existing options then just reinitialize the list
 our @PygmentizeArgs = qw(-O noclasses);
+
+push(@MyInitVariables, sub {
+  push(@KnownLocks, 'pygmentize');
+     });
 
 push(@MyRules, \&PygmentizeRule);
 $RuleOrder{\&PygmentizeRule} = -60;
@@ -50,9 +52,14 @@ sub DoPygmentize {
 
   RequestLockDir('pygmentize') or return '';
   WriteStringToFile("$TempDir/pygmentize", $contents);
-  my $output = `pygmentize $lexer -f html -O encoding=utf8 $args -- \Q$TempDir/pygmentize\E`;
+  my $output = `pygmentize $lexer -f html -O encoding=utf8 $args -- \Q$TempDir/pygmentize\E  2>&1`;
   ReleaseLockDir('pygmentize');
 
   utf8::decode($output);
+
+  if ($?) {
+    $output = $q->p($q->strong($output)) # "sh: pygmentize: command not found"
+        . $q->pre($contents);
+  }
   return $output;
 }

@@ -2,7 +2,7 @@
 umask(007);
 use utf8;
 do "$DataDir/password.pl";
-$ScriptName = 'http://oddmuse.org/wiki';
+$ScriptName = 'https://oddmuse.org/wiki';
 $ENV{PATH} = '/bin:/usr/bin';
 $WikiLinks   = 0;
 $BracketWiki = 1;
@@ -17,34 +17,34 @@ push(@MyInitVariables, sub {
        $HtmlHeaders = '<link rel="alternate" '
   . 'type="application/rss+xml" '
   . 'title="RecentChanges" '
-  . 'href="http://oddmuse.org/wiki?action=rss" />'
+  . 'href="https://oddmuse.org/wiki?action=rss" />'
   . '<link rel="alternate" '
   . 'type="application/rss+xml" '
   . 'title="News" '
-  . 'href="http://oddmuse.org/wiki?action=journal" />'
+  . 'href="https://oddmuse.org/wiki?action=journal" />'
   . '<link rel="alternate" '
   . 'type="application/rss+xml" '
   . 'title="Referrers" '
-  . 'href="http://oddmuse.org/wiki?action=refer-rss" />'
+  . 'href="https://oddmuse.org/wiki?action=refer-rss" />'
   . '<link rel="alternate" '
   . 'type="application/atom+xml" '
   . 'title="Source" '
-  . 'href="http://git.savannah.gnu.org/cgit/oddmuse.git/atom/?h=master" />';
+  . 'href="https://git.savannah.gnu.org/cgit/oddmuse.git/atom/?h=master" />';
        # http://www.emacswiki.org/cgi-bin/changelog-to-rss?url=http://www.emacswiki.org/oddmuse/ChangeLog;pattern=http://savannah.nongnu.org/cgi-bin/viewcvs/oddmuse/oddmuse/
        my $id = GetId();
        $HtmlHeaders .= '<link rel="alternate" '
   . 'type="application/rss+xml" '
   . 'title="Changes for ' . NormalToFree($id) . '" '
-  . 'href="http://oddmuse.org/wiki?action=rss;match=%5E'
+  . 'href="https://oddmuse.org/wiki?action=rss;match=%5E'
   . UrlEncode(FreeToNormal($id)) . '%24" />' if $id;
        my $username = GetParam('username', '');
        $HtmlHeaders .= '<link rel="alternate" '
   . 'type="application/rss+xml" '
   . 'title="Follow-ups for ' . NormalToFree($username) . '" '
-  . 'href="http://oddmuse.org/wiki?action=rss;followup='
+  . 'href="https://oddmuse.org/wiki?action=rss;followup='
   . UrlEncode($username) . '" />' if $username;
        # toc-js.pl
-       $TocOutlineLibrary = '/outliner.0.5.0.62.js';
+       $TocOutlineLibrary = '/outliner.min.js';
        $HtmHeaders . TocScript();
      });
 $InterMap = 'Local Intermap';
@@ -55,9 +55,9 @@ $CookieName  = "Oddmuse";
 $SiteName    = "Oddmuse";
 $HomePage    = "Main_Page";
 $RCName      = "RecentChanges";
-$LogoUrl     = "http://www.oddmuse.org/pics/oddmuse-logo.png";
-$StyleSheet  = "http://oddmuse.org/css/oddmuse-2014.css";
-@UserGotoBarPages = ($HomePage, 'About', 'News', 'Upgrading Issues', 'Errors', 'Source', 'Plans', $RCName, 'Site Map');
+$LogoUrl     = "https://www.oddmuse.org/pics/oddmuse-logo.png";
+$StyleSheet  = "https://oddmuse.org/default.css";
+@UserGotoBarPages = ($HomePage, 'About', 'News', 'Upgrading Issues', 'Errors', 'Source', 'Development', $RCName, 'Site Map');
 $UserGotoBar = '<a title="RSS 1.0" href="/wiki?action=rss"><span style="border:1px solid;border-color:#FC9 #630 #330 #F96;padding:0 3px;font:bold 10px verdana,sans-serif;color:#FFF;background:#F60;text-decoration:none;margin:0;">RSS</span></a>';
 
 $RcDefault   = 28;
@@ -65,6 +65,7 @@ $RcDefault   = 28;
 $KeepDays    = 28;
 
 $RefererTimeLimit = 60 * 60 * 24 * 7;
+$StaticDir = '/home/alex/oddmuse.org/static';
 
 $Smilies{quotemeta(':)')} = $Smilies{quotemeta(':-)')};
 $Smilies{quotemeta(':(')} = $Smilies{quotemeta(':-(')};

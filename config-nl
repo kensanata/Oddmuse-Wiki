@@ -2,7 +2,7 @@
 use utf8;
 $RCName      = 'Recente_wijzigingen';
 $HomePage    = 'Overzicht';
-@UserGotoBarPages = ($HomePage, $RCName, 'News', 'Upgrading Issues', 'Source', 'Plans');
+@UserGotoBarPages = ($HomePage, $RCName, 'News', 'Upgrading Issues', 'Source', 'Development');
 
 $FooterNote  = "Dit document kunt kopiëren, verspreiden en/of veranderen onder de  <a href=\"/FDL\">GNU Free Documentation License</a> versie 1.2 of een recentere versie van de <a href=\"http://www.fsf.org/\">Free Software Foundation</a>.";
 $EditNote    = "<p>Let er alstublieft op alleen eigen werk, of werk dat valt onder de <a href=\"/FDL\">GNU Free Documentation License</a>, toe te voegen.<br>Paragrafen worden gescheiden door lege regels. Paragrafen kunnen uit meerdere regels bestaan. Punten in een opsomming beginnen met een sterretje ('*'). Normale URLs worden veranderd in een link. Termen tussen dubbele rechte accolades, [[zoals hier]], worden lokale links. Codevoorbeelden worden voorafgegaan door vier spaties vooraf gegaan.";

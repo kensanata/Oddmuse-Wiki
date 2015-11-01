@@ -13,7 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescription('fix-encoding.pl', 'Fix Encoding', undef, '2.3.4-18-g66972c4');
+use strict;
+use v5.10;
+
+AddModuleDescription('fix-encoding.pl', 'Fix Encoding', undef, '2.3.5-309-ga8920bf');
+
+our (%Action, %Page, @MyAdminCode);
 
 $Action{'fix-encoding'} = \&FixEncoding;
 

@@ -12,15 +12,18 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-package OddMuse;
+use strict;
+use v5.10;
 
-AddModuleDescription('banned-regexps.pl', 'Banning Regular Expressions', undef, '2.3.4-18-g66972c4');
+AddModuleDescription('banned-regexps.pl', 'Banning Regular Expressions', undef, '2.3.5-309-ga8920bf');
 
-=h1 Compatibility
+=encoding utf8
+
+=head1 Compatibility
 
 This extension works with logbannedcontent.pl.
 
-=h1 Example content for the BannedRegexps page:
+=head1 Example content for the BannedRegexps page:
 
     # This page lists regular expressions that prevent the saving of a page.
     # The regexps are matched against any page or comment submitted.
@@ -42,7 +45,8 @@ This extension works with logbannedcontent.pl.
 
 =cut
 
-use vars qw($BannedRegexps);
+our (%AdminPages, %LockOnCreation, @MyInitVariables, %PlainTextPages, $BannedContent, $BannedFile);
+our ($BannedRegexps);
 
 $BannedRegexps = 'BannedRegexps';
 
@@ -52,11 +56,8 @@ push(@MyInitVariables, sub {
        $PlainTextPages{$BannedRegexps} = 1;
      });
 
-*RegexpOldBannedContent = *BannedContent;
-*BannedContent = *RegexpNewBannedContent;
-
-# the above also changes the mapping for the variable!
-$BannedContent = $RegexpOldBannedContent;
+*RegexpOldBannedContent = \&BannedContent;
+*BannedContent = \&RegexpNewBannedContent;
 
 sub RegexpNewBannedContent {
   my $str = shift;

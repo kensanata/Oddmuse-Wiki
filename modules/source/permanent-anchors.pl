@@ -13,7 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescription('permanent-anchors.pl', 'Permanent Anchors', undef, '2.3.4-18-g66972c4');
+use strict;
+use v5.10;
+
+AddModuleDescription('permanent-anchors.pl', 'Permanent Anchors', undef, '2.3.5-309-ga8920bf');
+
+our ($q, $OpenPageName, %IndexHash, $DataDir, $ScriptName, @MyRules, @MyInitVariables, $FS, $FreeLinkPattern, @IndexOptions);
+
+=encoding utf8
 
 =head1 Permanent Anchors
 
@@ -26,7 +33,7 @@ difference.
 
 =cut
 
-use vars qw(%PermanentAnchors %PagePermanentAnchors $PermanentAnchorsFile);
+our (%PermanentAnchors, %PagePermanentAnchors, $PermanentAnchorsFile);
 
 $PermanentAnchorsFile = "$DataDir/permanentanchors";
 
@@ -71,7 +78,7 @@ push(@MyRules, \&PermanentAnchorsRule);
 
 sub PermanentAnchorsRule {
   my ($locallinks, $withanchors) = @_;
-  if (m/\G(\[::$FreeLinkPattern\])/cog) {
+  if (m/\G(\[::$FreeLinkPattern\])/cg) {
     #[::Free Link] permanent anchor create only $withanchors
     Dirty($1);
     if ($withanchors) {
@@ -163,8 +170,8 @@ anchors.
 
 =cut
 
-*OldPermanentAnchorsDeletePage = *DeletePage;
-*DeletePage = *NewPermanentAnchorsDeletePage;
+*OldPermanentAnchorsDeletePage = \&DeletePage;
+*DeletePage = \&NewPermanentAnchorsDeletePage;
 
 sub NewPermanentAnchorsDeletePage {
   my $status = OldPermanentAnchorsDeletePage(@_);
@@ -172,8 +179,8 @@ sub NewPermanentAnchorsDeletePage {
   DeletePermanentAnchors(@_); # the only parameter is $id
 }
 
-*OldPermanentAnchorsSave = *Save;
-*Save = *NewPermanentAnchorsSave;
+*OldPermanentAnchorsSave = \&Save;
+*Save = \&NewPermanentAnchorsSave;
 
 sub NewPermanentAnchorsSave {
   OldPermanentAnchorsSave(@_);
@@ -208,8 +215,8 @@ page foo also exists.”
 
 =cut
 
-*OldPermanentAnchorsResolveId = *ResolveId;
-*ResolveId = *NewPermanentAnchorsResolveId;
+*OldPermanentAnchorsResolveId = \&ResolveId;
+*ResolveId = \&NewPermanentAnchorsResolveId;
 
 sub NewPermanentAnchorsResolveId {
   my $id = shift;
@@ -230,8 +237,8 @@ automatically allow internal transclusion.
 
 =cut
 
-*OldPermanentAnchorsGetPageContent = *GetPageContent;
-*GetPageContent = *NewPermanentAnchorsGetPageContent;
+*OldPermanentAnchorsGetPageContent = \&GetPageContent;
+*GetPageContent = \&NewPermanentAnchorsGetPageContent;
 
 sub NewPermanentAnchorsGetPageContent {
   my $id = shift;
@@ -239,7 +246,7 @@ sub NewPermanentAnchorsGetPageContent {
   if (not $result and $PermanentAnchors{$id}) {
     $result = OldPermanentAnchorsGetPageContent($PermanentAnchors{$id});
     $result =~ s/^(.*\n)*.*\[::$id\]// or return '';
-    $result =~ s/(\n=|\n----|\[::$FreeLinkPattern\])(.*\n)*.*$//o;
+    $result =~ s/(\n=|\n----|\[::$FreeLinkPattern\])(.*\n)*.*$//;
   }
   return $result;
 }
@@ -270,8 +277,8 @@ browse links from C<GetHistoryLine>.
 
 =cut
 
-*OldPermanentAnchorsGetHistoryLine = *GetHistoryLine;
-*GetHistoryLine = *NewPermanentAnchorsGetHistoryLine;
+*OldPermanentAnchorsGetHistoryLine = \&GetHistoryLine;
+*GetHistoryLine = \&NewPermanentAnchorsGetHistoryLine;
 
 sub NewPermanentAnchorsGetHistoryLine {
   my $id = shift;

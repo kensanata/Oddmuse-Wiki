@@ -12,11 +12,14 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-package OddMuse;
+use strict;
+use v5.10;
+use utf8;
 
-AddModuleDescription('toc-js.pl', 'Javascript Table of Contents Extension', undef, '2.3.4-18-g66972c4');
+AddModuleDescription('toc-js.pl', 'Javascript Table of Contents Extension', undef, '2.3.5-309-ga8920bf');
 
-use vars qw($TocOutlineLibrary);
+our ($HtmlHeaders, @MyInitVariables);
+our ($TocOutlineLibrary);
 
 $TocOutlineLibrary = 'http://h5o.googlecode.com/files/outliner.0.5.0.62.js';
 

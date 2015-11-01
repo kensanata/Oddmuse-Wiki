@@ -2,7 +2,7 @@
 use utf8;
 $RCName      = 'Modifications_Récentes';
 $HomePage    = 'Plan_Du_Site';
-@UserGotoBarPages = ($HomePage, $RCName, 'News', 'Upgrading Issues', 'Source', 'Plans');
+@UserGotoBarPages = ($HomePage, $RCName, 'News', 'Upgrading Issues', 'Source', 'Development');
 
 $FooterNote  = "Permission vous est donnée de copier, distribuer et/ou modifier ce document selon les termes de la Licence <a href=\"/FDL\">GNU Free Documentation License</a>, Version 1.2 ou ultérieure publiée par la <a href=\"http://www.fsf.org/\">Free Software Foundation</a>.";
 

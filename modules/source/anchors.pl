@@ -1,4 +1,4 @@
-# Copyright (C) 2004, 2005, 2009  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -12,18 +12,22 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescription('anchors.pl', 'Local Anchor Extension', undef, '2.3.4-18-g66972c4');
+use strict;
+use v5.10;
 
+AddModuleDescription('anchors.pl', 'Local Anchor Extension', undef, '2.3.5-309-ga8920bf');
+
+our ($q, %Page, $FootnoteNumber, $FreeLinkPattern, @MyRules, $BracketWiki);
 push(@MyRules, \&AnchorsRule);
 
 sub AnchorsRule {
-  if (m/\G\[\[\#$FreeLinkPattern\]\]/gc) {
+  if (m/\G\[\[\#$FreeLinkPattern\]\]/cg) {
     return $q->a({-href=>'#' . FreeToNormal($1), -class=>'local anchor'}, $1);
-  } elsif ($BracketWiki && m/\G\[\[\#$FreeLinkPattern\|([^\]]+)\]\]/gc) {
+  } elsif ($BracketWiki && m/\G\[\[\#$FreeLinkPattern\|([^\]]+)\]\]/cg) {
     return $q->a({-href=>'#' . FreeToNormal($1), -class=>'local anchor'}, $2);
-  } elsif ($BracketWiki && m/\G(\[\[$FreeLinkPattern\#$FreeLinkPattern\|([^\]]+)\]\])/cog
-	   or m/\G(\[\[\[$FreeLinkPattern\#$FreeLinkPattern\]\]\])/cog
-	   or m/\G(\[\[$FreeLinkPattern\#$FreeLinkPattern\]\])/cog) {
+  } elsif ($BracketWiki && m/\G(\[\[$FreeLinkPattern\#$FreeLinkPattern\|([^\]]+)\]\])/cg
+	   or m/\G(\[\[\[$FreeLinkPattern\#$FreeLinkPattern\]\]\])/cg
+	   or m/\G(\[\[$FreeLinkPattern\#$FreeLinkPattern\]\])/cg) {
     # This one is not a dirty rule because the output is always a page
     # link, never an edit link (unlike normal free links).
     my $bracket = (substr($1, 0, 3) eq '[[[');
@@ -35,14 +39,30 @@ sub AnchorsRule {
     if (!$text && $bracket) {
       $text = BracketLink(++$FootnoteNumber); # s/_/ /g happens further down!
       $class .= ' number';
-      $title = $id; # override title
-      $title =~ s/_/ /g if $free;
+      # Since we're displaying a number such as [1], the title attribute should tell us where this will go.
+      $title = "$2 ($3)";
+      # The user might have writen [[[FooBar#one two]]] or [[[FooBar#one_two]]]
+      $title =~ s/_/ /g;
     }
     $text = $id unless $text;
     $text =~ s/_/ /g;
     return ScriptLink(UrlEncode($id), $text, $class, undef, $title);
-  } elsif (m/\G\[\:$FreeLinkPattern\]/gc) {
+  } elsif (m/\G\[\:$FreeLinkPattern\]/cg) {
     return $q->a({-name=>FreeToNormal($1), -class=>'anchor'}, '');
   }
   return;
+}
+
+*OldAnchorsBrowsePage=\&BrowsePage;
+*BrowsePage=\&NewAnchorsBrowsePage;
+
+sub NewAnchorsBrowsePage {
+  my ($id) = @_;
+  OpenPage($id);
+  if (not GetParam('revision', '')
+      and not GetParam('oldid', '')
+      and $Page{text} =~ /^\#REDIRECT\s+\[\[$FreeLinkPattern\#$FreeLinkPattern\]\]/) {
+    return ReBrowsePage(FreeToNormal($1 . '#' . $2), $id);
+  }
+  return OldAnchorsBrowsePage(@_);
 }

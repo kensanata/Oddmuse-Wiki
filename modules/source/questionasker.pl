@@ -1,5 +1,5 @@
 # Copyright (C) 2004  Brock Wilcox <awwaiid@thelackthereof.org>
-# Copyright (C) 2006, 2007  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,13 +14,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescription('questionasker.pl', 'QuestionAsker Extension', undef, '2.3.4-18-g66972c4');
+use strict;
+use v5.10;
 
-use vars qw(@QuestionaskerQuestions
-	    $QuestionaskerRememberAnswer
-	    $QuestionaskerSecretKey
-	    $QuestionaskerRequiredList
-	    %QuestionaskerProtectedForms);
+AddModuleDescription('questionasker.pl', 'QuestionAsker Extension', undef, '2.3.5-309-ga8920bf');
+
+our ($q, $bol, $FreeLinks, $FreeLinkPattern, $LinkPattern, $WikiLinks,
+     @MyInitVariables, %AdminPages, %CookieParameters, @MyFormChanges);
+
+our (@QuestionaskerQuestions,
+     $QuestionaskerRememberAnswer,
+     $QuestionaskerSecretKey,
+     $QuestionaskerRequiredList,
+     %QuestionaskerProtectedForms);
 
 # A list of arrays. The first element in each array is a string, the
 # question to be asked. The second element is a subroutine which is
@@ -58,11 +64,10 @@ sub QuestionaskerInit {
   $QuestionaskerRequiredList = FreeToNormal($QuestionaskerRequiredList);
   $AdminPages{$QuestionaskerRequiredList} = 1;
   $CookieParameters{$QuestionaskerSecretKey} = '';
-  $InvisibleCookieParameters{$QuestionaskerSecretKey} = 1;
 }
 
-*OldQuestionaskerDoPost = *DoPost;
-*DoPost = *NewQuestionaskerDoPost;
+*OldQuestionaskerDoPost = \&DoPost;
+*DoPost = \&NewQuestionaskerDoPost;
 
 sub NewQuestionaskerDoPost {
   my(@params) = @_;
@@ -94,22 +99,10 @@ sub NewQuestionaskerDoPost {
   return (OldQuestionaskerDoPost(@params));
 }
 
-*OldQuestionaskerGetEditForm = *GetEditForm;
-*GetEditForm = *NewQuestionaskerGetEditForm;
-
-sub NewQuestionaskerGetEditForm {
-  return QuestionAddTo(OldQuestionaskerGetEditForm(@_));
-}
-
-*OldQuestionaskerGetCommentForm = *GetCommentForm;
-*GetCommentForm = *NewQuestionaskerGetCommentForm;
-
-sub NewQuestionaskerGetCommentForm {
-  return QuestionAddTo(OldQuestionaskerGetCommentForm(@_));
-}
+push(@MyFormChanges, \&QuestionAddTo);
 
 sub QuestionAddTo {
-  my $form = shift;
+  my ($form, $type, $upload) = @_;
   if (not $upload
       and not QuestionaskerException(GetId())
       and not $QuestionaskerRememberAnswer && GetParam($QuestionaskerSecretKey, 0)

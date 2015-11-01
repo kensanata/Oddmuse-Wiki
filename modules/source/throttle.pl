@@ -21,19 +21,23 @@
 # $InstanceThrottleLimit by keeping track of the process ids in
 # $InstanceThrottleDir
 
-AddModuleDescription('throttle.pl', 'Limit Number Of Instances Running', undef, '2.3.4-18-g66972c4');
+use strict;
+use v5.10;
+
+AddModuleDescription('throttle.pl', 'Limit Number Of Instances Running', undef, '2.3.5-309-ga8920bf');
 
 use File::Glob ':glob';
-use vars qw($InstanceThrottleDir $InstanceThrottleLimit);
+our ($q, $DataDir);
+our ($InstanceThrottleDir, $InstanceThrottleLimit);
 
 $InstanceThrottleDir = $DataDir."/pids"; # directory for pid files
 $InstanceThrottleLimit = 2; # maximum number of parallel processes
 
-*OldDoSurgeProtection = *DoSurgeProtection;
-*DoSurgeProtection = *NewDoSurgeProtection;
+*OldDoSurgeProtection = \&DoSurgeProtection;
+*DoSurgeProtection = \&NewDoSurgeProtection;
 
-*OldDoBrowseRequest = *DoBrowseRequest;
-*DoBrowseRequest = *NewDoBrowseRequest;
+*OldDoBrowseRequest = \&DoBrowseRequest;
+*DoBrowseRequest = \&NewDoBrowseRequest;
 
 sub NewDoSurgeProtection {
   DoInstanceThrottle();

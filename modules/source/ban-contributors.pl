@@ -24,8 +24,11 @@ allowing you to ban him or her immediately. If you click the button,
 the IP or hostname will be added to the C<BannedHosts> page for you.
 
 =cut
+use strict;
+use v5.10;
+our ($q, $Now, %Page, $OpenPageName, %Action, $UrlPattern, $BannedContent, $BannedHosts, @MyAdminCode);
 
-AddModuleDescription('ban-contributors.pl', 'Ban Contributors Extension', undef, '2.3.4-18-g66972c4');
+AddModuleDescription('ban-contributors.pl', 'Ban Contributors Extension', undef, '2.3.5-309-ga8920bf');
 
 push(@MyAdminCode, \&BanMenu);
 
@@ -112,8 +115,8 @@ that will be added to BannedHosts.
 
 =cut
 
-*OldBanContributorsWriteRcLog = *WriteRcLog;
-*WriteRcLog = *NewBanContributorsWriteRcLog;
+*OldBanContributorsWriteRcLog = \&WriteRcLog;
+*WriteRcLog = \&NewBanContributorsWriteRcLog;
 
 sub NewBanContributorsWriteRcLog {
   my ($tag, $id, $to) = @_;
@@ -121,10 +124,10 @@ sub NewBanContributorsWriteRcLog {
       and $OpenPageName eq $id and UserIsAdmin()) {
     # we currently have the clean page loaded, so we need to reload
     # the spammed revision (there is a possible race condition here)
-    my ($old) = GetTextRevision($Page{revision}-1, 1);
-    my %urls = map {$_ => 1 } $old =~ /$UrlPattern/og;
+    my $old = GetTextRevision($Page{revision} - 1, 1)->{text};
+    my %urls = map {$_ => 1 } $old =~ /$UrlPattern/g;
     # we open the file again to force a load of the despammed page
-    foreach my $url ($Page{text} =~ /$UrlPattern/og) {
+    foreach my $url ($Page{text} =~ /$UrlPattern/g) {
       delete($urls{$url});
     }
     # we also remove any candidates that are already banned
@@ -150,7 +153,7 @@ sub NewBanContributorsWriteRcLog {
 		  $q->submit(T('Ban!'))),
 	    $q->end_form();
     };
-    print $q->p(T("Consider banning the IP number as well: "),
+    print $q->p(T("Consider banning the IP number as well:"), ' ',
 		ScriptLink('action=ban;id=' . UrlEncode($id), T('Ban contributors')));
   };
   return OldBanContributorsWriteRcLog(@_);

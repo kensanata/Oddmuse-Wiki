@@ -11,17 +11,22 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
+use strict;
+use v5.10;
 
-AddModuleDescription('referrer-tracking.pl', 'Automatic Link Back', undef, '2.3.4-18-g66972c4');
+AddModuleDescription('referrer-tracking.pl', 'Automatic Link Back', undef, '2.3.5-309-ga8920bf');
 
 use LWP::UserAgent;
 
-push(@KnownLocks, "refer_*");
+our ($q, $Now, $OpenPageName, %Action, @KnownLocks, %AdminPages,
+$ScriptName, $DataDir, $EmbedWiki, $FS, @MyInitVariables,
+@MyAdminCode, $FullUrlPattern, @MyFooters);
 
+push(@KnownLocks, "refer_*");
 $Action{refer} = \&DoPrintAllReferers;
 
-use vars qw($RefererDir $RefererTimeLimit $RefererLimit $RefererFilter
-%Referers);
+our ($RefererDir, $RefererTimeLimit, $RefererLimit, $RefererFilter,
+$RefererTitleLimit, %Referers);
 
 $RefererTimeLimit = 86400; # How long referrals shall be remembered in seconds
 $RefererLimit	  = 15;	   # How many different referer shall be remembered
@@ -43,20 +48,8 @@ sub RefererMenu {
   push(@$menuref, ScriptLink('action=refer', T('All Referrers'), 'refer'));
 }
 
-*RefererOldPrintFooter = *PrintFooter;
-*PrintFooter = *RefererNewPrintFooter;
-
-sub RefererNewPrintFooter {
-  my ($id, $rev, $comment, @rest) = @_;
-  if (not GetParam('embed', $EmbedWiki)) {
-    my $referers = RefererTrack($id);
-    print $referers if $referers;
-  }
-  RefererOldPrintFooter($id, $rev, $comment, @rest);
-}
-
-*RefererOldExpireKeepFiles = *ExpireKeepFiles;
-*ExpireKeepFiles = *RefererNewExpireKeepFiles;
+*RefererOldExpireKeepFiles = \&ExpireKeepFiles;
+*ExpireKeepFiles = \&RefererNewExpireKeepFiles;
 
 sub RefererNewExpireKeepFiles {
   RefererOldExpireKeepFiles(@_); # call with opened page
@@ -64,8 +57,8 @@ sub RefererNewExpireKeepFiles {
   WriteReferers($OpenPageName);
 }
 
-*RefererOldDeletePage = *DeletePage;
-*DeletePage = *RefererNewDeletePage;
+*RefererOldDeletePage = \&DeletePage;
+*DeletePage = \&RefererNewDeletePage;
 
 sub RefererNewDeletePage {
   my $status = RefererOldDeletePage(@_);
@@ -153,7 +146,7 @@ sub GetReferers {
 
 sub PageContentToTitle {
   my ($content) = @_;
-  my $title = $1 if $content =~ m!<h1.*?>(.*?)</h1>!;
+  my $title = $content =~ m!<h1.*?>(.*?)</h1>! ? $1 : '';
   $title = $1 if not $title and $content =~ m!<title>(.*?)</title>!;
   # get rid of extra tags
   $title =~ s!<.*?>!!g;
@@ -197,6 +190,12 @@ sub WriteReferers {
     unlink $file; # just try it, doesn't matter if it fails
   }
   ReleaseLockDir('refer_' . $id);
+}
+
+if ($MyFooters[-1] == \&DefaultFooter) {
+  splice(@MyFooters, -1, 0, \&RefererTrack);
+} else {
+  push(@MyFooters, \&RefererTrack);
 }
 
 sub RefererTrack {

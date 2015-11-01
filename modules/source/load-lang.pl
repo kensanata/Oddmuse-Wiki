@@ -13,40 +13,50 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-AddModuleDescription('load-lang.pl', 'Language Browser Preferences', undef, '2.3.4-18-g66972c4');
+use strict;
+use v5.10;
+
+AddModuleDescription('load-lang.pl', 'Language Browser Preferences', undef, '2.3.5-309-ga8920bf');
+
+our ($q, %CookieParameters, $ConfigFile, $DataDir, $ModuleDir, $NamespaceCurrent, @MyInitVariables);
+our $CurrentLanguage;
+
+our $LoadLanguageDir = "$ModuleDir/translations"; # by default same as in git
 
 $CookieParameters{interface} = '';
 
-use vars qw($CurrentLanguage $LoadLanguageDir);
-
-my %library= ('bg' => 'bulgarian-utf8.pl',
-	      'de' => 'german-utf8.pl',
-	      'es' => 'spanish-utf8.pl',
-	      'fr' => 'french-utf8.pl',
-	      'fi' => 'finnish-utf8.pl',
-	      'gr' => 'greek-utf8.pl',
-	      'he' => 'hebrew-utf8.pl',
-	      'it' => 'italian-utf8.pl',
-	      'ja' => 'japanese-utf8.pl',
-	      'ko' => 'korean-utf8.pl',
-	      'nl' => 'dutch-utf8.pl',
-	      'pl' => 'polish-utf8.pl',
-	      'pt' => 'portuguese-utf8.pl',
-	      'ro' => 'romanian-utf8.pl',
-	      'ru' => 'russian-utf8.pl',
-	      'se' => 'swedish-utf8.pl',
-	      'sr' => 'serbian-utf8.pl',
-	      'zh' => 'chinese-utf8.pl',
-	      'zh-cn' => 'chinese_cn-utf8.pl',
-	      'zh-tw' => 'chinese-utf8.pl',
-	     );
+our %TranslationsLibrary = (
+  'bg'    => 'bulgarian-utf8.pl',
+  'ca'    => 'catalan-utf8.pl',
+  'de'    => 'german-utf8.pl',
+  'es'    => 'spanish-utf8.pl',
+  'fi'    => 'finnish-utf8.pl',
+  'fr'    => 'french-utf8.pl',
+  'gr'    => 'greek-utf8.pl',
+  'he'    => 'hebrew-utf8.pl',
+  'it'    => 'italian-utf8.pl',
+  'ja'    => 'japanese-utf8.pl',
+  'ko'    => 'korean-utf8.pl',
+  'nl'    => 'dutch-utf8.pl',
+  'pl'    => 'polish-utf8.pl',
+  'pt'    => 'portuguese-utf8.pl',
+  'pt-br' => 'brazilian-portuguese-utf8.pl',
+  'ro'    => 'romanian-utf8.pl',
+  'ru'    => 'russian-utf8.pl',
+  'se'    => 'swedish-utf8.pl',
+  'sr'    => 'serbian-utf8.pl',
+  'uk'    => 'ukrainian-utf8.pl',
+  'zh'    => 'chinese-utf8.pl',
+  'zh-cn' => 'chinese_cn-utf8.pl',
+  'zh-tw' => 'chinese-utf8.pl',
+    );
 
 sub LoadLanguage {
   # my $requested_language = "da, en-gb;q=0.8, en;q=0.7";
   my $requested_language = $q->http('Accept-language');
   my @languages = split(/ *, */, $requested_language);
   my %Lang = ();
-  foreach $_ (@languages) {
+  foreach (@languages) {
     my $qual = 1;
     $qual = $1 if (/q=([0-9.]+)/);
     $Lang{$qual} = $1 if (/^([-a-z]+)/);
@@ -59,21 +69,14 @@ sub LoadLanguage {
   #                . "Result: "
   #                . join(', ', map { "$_ ($Lang{$_})" } @prefs))
   #      . $q->end_html) && exit if GetParam('debug', '');
-  foreach $_ (@prefs) {
+  foreach (@prefs) {
     last if $Lang{$_} eq 'en'; # the default
-    my $file = $library{$Lang{$_}};
+    my $file = $TranslationsLibrary{$Lang{$_}};
     $file = "$LoadLanguageDir/$file" if defined $LoadLanguageDir;
     if (-r $file) {
       do $file;
       do "$ConfigFile-$Lang{$_}" if -r "$ConfigFile-$Lang{$_}";
       $CurrentLanguage = $Lang{$_};
-      my $f;
-      if ($NamespaceCurrent) {
-	$f = "$DataDir/../README.$Lang{$_}";
-      } else {
-	$f = "$DataDir/README.$Lang{$_}";
-      }
-      $ReadMe = $f if -r $f;
       last;
     }
   }

@@ -17,12 +17,17 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescription('translations.pl', 'Translation Extension', undef, '2.3.4-18-g66972c4');
+use strict;
+use v5.10;
+
+AddModuleDescription('translations.pl', 'Translation Extension', undef, '2.3.5-309-ga8920bf');
+
+our (@MyRules, $FreeLinkPattern);
 
 push(@MyRules, \&TranslationRule);
 
 sub TranslationRule {
-  if (m/\G(\&lt;translation +\[\[$FreeLinkPattern\]\] +(\d+)\&gt;[ \t]*)/gc) {
+  if (m/\G(\&lt;translation +\[\[$FreeLinkPattern\]\] +(\d+)\&gt;[ \t]*)/cg) {
     Dirty($1);
     print GetTranslationLink($2, $3);
     return '';
@@ -32,8 +37,7 @@ sub TranslationRule {
 
 sub GetCurrentPageRevision {
   my $id   = shift;
-  my %page = ParseData(ReadFileOrDie(GetPageFile($id)));
-  return $page{revision};
+  return ParseData(ReadFileOrDie(GetPageFile($id)))->{revision};
 }
 
 sub GetTranslationLink {
@@ -43,9 +47,9 @@ sub GetTranslationLink {
   $id =~ s/^\s+//;		# Trim extra spaces
   $id =~ s/\s+$//;
   $id     = FreeToNormal($id);
-  $result = Ts('This page is a translation of %s. ', GetPageOrEditLink( $id, '', 0, 1));
+  $result = Ts('This page is a translation of %s.', GetPageOrEditLink( $id, '', 0, 1));
+  $result .= ' ';
   $currentRevision = GetCurrentPageRevision($id);
-
   if ($currentRevision == $revision) {
     $result .= T("The translation is up to date.");
   } elsif ( $currentRevision > $revision ) {

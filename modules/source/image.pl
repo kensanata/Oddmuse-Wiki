@@ -16,9 +16,13 @@
 #    59 Temple Place, Suite 330
 #    Boston, MA 02111-1307 USA
 
-AddModuleDescription('image.pl', 'Image Extension', undef, '2.3.4-18-g66972c4');
+use strict;
+use v5.10;
 
-use vars qw($ImageUrlPath);
+AddModuleDescription('image.pl', 'Image Extension', undef, '2.3.5-309-ga8920bf');
+
+our ($q, @MyRules, $FullUrlPattern, $FreeLinkPattern, $FreeInterLinkPattern, %IndexHash, $ScriptName, $UsePathInfo, $Monolithic);
+our ($ImageUrlPath);
 
 $ImageUrlPath = '/images';      # URL where the images are to be found
 
@@ -28,7 +32,7 @@ push(@MyRules, \&ImageSupportRule);
 
 sub ImageSupportRule {
   my $result = undef;
-  if (m!\G\[\[image((/[a-z]+)*)( external)?:\s*([^]|]+?)\s*(\|[^]|]+?)?\s*(\|[^]|]*?)?\s*(\|[^]|]*?)?\s*(\|[^]|]*?)?\s*\]\](\{([^}]+)\})?!gc) {
+  if (m!\G\[\[image((/[a-z]+)*)( external)?:\s*([^]|]+?)\s*(\|[^]|]+?)?\s*(\|[^]|]*?)?\s*(\|[^]|]*?)?\s*(\|[^]|]*?)?\s*\]\](\{([^}]+)\})?!cg) {
     my $oldpos = pos;
     my $class = 'image' . $1;
     my $external = $3;
@@ -115,6 +119,7 @@ sub ImageGetExternalUrl {
     } elsif ($UsePathInfo and !$Monolithic) {
       $link = $ScriptName . '/' . $link;
     } elsif ($Monolithic) {
+      # if used together with all.pl
       $link = '#' . $link;
     } else {
       $link = $ScriptName . '?' . $link;
