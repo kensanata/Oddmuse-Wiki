@@ -15,7 +15,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('anchors.pl', 'Local Anchor Extension', undef, '2.3.5-309-ga8920bf');
+AddModuleDescription('anchors.pl', 'Local Anchor Extension', undef, '2.3.7-56-g90d44bf');
 
 our ($q, %Page, $FootnoteNumber, $FreeLinkPattern, @MyRules, $BracketWiki);
 push(@MyRules, \&AnchorsRule);

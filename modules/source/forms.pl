@@ -4,7 +4,7 @@ use v5.10;
 
 # ====================[ forms.pl                           ]====================
 
-AddModuleDescription('forms.pl', 'Form Extension', undef, '2.3.5-309-ga8920bf');
+AddModuleDescription('forms.pl', 'Form Extension', undef, '2.3.7-56-g90d44bf');
 
 our ($q, $OpenPageName, @MyRules, $CrossbarPageName);
 
@@ -12,8 +12,8 @@ our ($q, $OpenPageName, @MyRules, $CrossbarPageName);
 push(@MyRules, \&FormsRule);
 
 sub FormsRule {
-  if (-f GetLockedPageFile($OpenPageName) or (InElement('div', '^class="crossbar"$') and
-      -f GetLockedPageFile($CrossbarPageName))) {
+  if (IsFile(GetLockedPageFile($OpenPageName)) or (InElement('div', '^class="crossbar"$') and
+      IsFile(GetLockedPageFile($CrossbarPageName)))) {
     if (/\G(\&lt;form.*?\&lt;\/form\&gt;)/cgs) {
       my $form = $1;
       my $oldpos = pos;

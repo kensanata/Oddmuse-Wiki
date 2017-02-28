@@ -4,7 +4,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('usemod.pl', 'Usemod Markup Extension', undef, '2.3.5-309-ga8920bf');
+AddModuleDescription('usemod.pl', 'Usemod Markup Extension', undef, '2.3.7-56-g90d44bf');
 
 our ($q, $bol, %RuleOrder, @MyRules, @MyInitVariables, $PortraitSupportColor, $PortraitSupportColorDiv);
 our ($RFCPattern, $ISBNPattern, @HtmlTags, $HtmlTags, $HtmlLinks, $RawHtml,

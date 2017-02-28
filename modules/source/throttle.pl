@@ -3,7 +3,7 @@
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -12,10 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the
-#    Free Software Foundation, Inc.
-#    59 Temple Place, Suite 330
-#    Boston, MA 02111-1307 USA
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Limits the number of parallel Oddmuse instances to
 # $InstanceThrottleLimit by keeping track of the process ids in
@@ -24,7 +21,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('throttle.pl', 'Limit Number Of Instances Running', undef, '2.3.5-309-ga8920bf');
+AddModuleDescription('throttle.pl', 'Limit Number Of Instances Running', undef, '2.3.7-56-g90d44bf');
 
 use File::Glob ':glob';
 our ($q, $DataDir);
@@ -52,12 +49,12 @@ sub NewDoBrowseRequest {
 
 # limit the script to a maximum of $InstanceThrottleLimit instances
 sub DoInstanceThrottle {
-  my @pids = bsd_glob($InstanceThrottleDir."/*");
+  my @pids = Glob($InstanceThrottleDir."/*");
   # Go over all pids: validate each pid by sending signal 0, unlink
   # pidfile if pid does not exist and return 0. Count the number of
   # zeros (= removed files = zombies) with grep.
   my $zombies = grep /^0$/,
-    (map {/(\d+)$/ and kill 0,$1 or unlink and 0} @pids);
+    (map {/(\d+)$/ and kill 0,$1 or Unlink($_) and 0} @pids);
   if (scalar(@pids)-$zombies >= $InstanceThrottleLimit) {
     ReportError(Ts('Too many instances.  Only %s allowed.',
 		   $InstanceThrottleLimit),
@@ -80,5 +77,5 @@ sub CreatePidFile {
 sub RemovePidFile {
   my $file = "$InstanceThrottleDir/$$";
   # not fatal
-  unlink $file;
+  Unlink($file);
 }

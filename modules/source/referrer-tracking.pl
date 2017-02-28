@@ -14,7 +14,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('referrer-tracking.pl', 'Automatic Link Back', undef, '2.3.5-309-ga8920bf');
+AddModuleDescription('referrer-tracking.pl', 'Automatic Link Back', undef, '2.3.7-56-g90d44bf');
 
 use LWP::UserAgent;
 
@@ -65,7 +65,7 @@ sub RefererNewDeletePage {
   return $status if $status; # this would be the error message
   my $id = shift;
   my $fname = GetRefererFile($id);
-  unlink($fname) if (-f $fname);
+  Unlink($fname) if (IsFile($fname));
   return ''; # no error
 }
 
@@ -79,7 +79,7 @@ sub GetRefererFile {
 sub ReadReferers {
   my $file = GetRefererFile(shift);
   %Referers = ();
-  if (-f $file) {
+  if (IsFile($file)) {
     my ($status, $data) = ReadFile($file);
     %Referers = split(/$FS/, $data, -1) if $status;
   }
@@ -154,7 +154,7 @@ sub PageContentToTitle {
   $title =~ s!\s+! !g;
   $title =~ s!^ !!;
   $title =~ s! $!!;
-  $title = substring($title, 0, $RefererTitleLimit) . "..."
+  $title = substr($title, 0, $RefererTitleLimit) . "..."
     if length($title) > $RefererTitleLimit;
   return $title;
 }
@@ -187,7 +187,7 @@ sub WriteReferers {
     CreateDir($RefererDir);
     WriteStringToFile($file, $data);
   } else {
-    unlink $file; # just try it, doesn't matter if it fails
+    Unlink($file); # just try it, doesn't matter if it fails
   }
   ReleaseLockDir('refer_' . $id);
 }

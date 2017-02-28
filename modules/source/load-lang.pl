@@ -16,7 +16,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('load-lang.pl', 'Language Browser Preferences', undef, '2.3.5-309-ga8920bf');
+AddModuleDescription('load-lang.pl', 'Language Browser Preferences', undef, '2.3.7-56-g90d44bf');
 
 our ($q, %CookieParameters, $ConfigFile, $DataDir, $ModuleDir, $NamespaceCurrent, @MyInitVariables);
 our $CurrentLanguage;
@@ -29,6 +29,7 @@ our %TranslationsLibrary = (
   'bg'    => 'bulgarian-utf8.pl',
   'ca'    => 'catalan-utf8.pl',
   'de'    => 'german-utf8.pl',
+  'et'    => 'estonian-utf8.pl',
   'es'    => 'spanish-utf8.pl',
   'fi'    => 'finnish-utf8.pl',
   'fr'    => 'french-utf8.pl',
@@ -72,10 +73,11 @@ sub LoadLanguage {
   foreach (@prefs) {
     last if $Lang{$_} eq 'en'; # the default
     my $file = $TranslationsLibrary{$Lang{$_}};
+    next unless $file; # file is not listed, eg. there is no file for "de-ch"
     $file = "$LoadLanguageDir/$file" if defined $LoadLanguageDir;
-    if (-r $file) {
+    if (IsFile($file)) {
       do $file;
-      do "$ConfigFile-$Lang{$_}" if -r "$ConfigFile-$Lang{$_}";
+      do "$ConfigFile-$Lang{$_}" if IsFile("$ConfigFile-$Lang{$_}");
       $CurrentLanguage = $Lang{$_};
       last;
     }

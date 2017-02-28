@@ -15,37 +15,36 @@ push(@MyInitVariables, sub {
        # delete $AdminPages{$BannedContent};
        # delete $AdminPages{$BannedHosts};
        $HtmlHeaders = '<link rel="alternate" '
-  . 'type="application/rss+xml" '
-  . 'title="RecentChanges" '
-  . 'href="https://oddmuse.org/wiki?action=rss" />'
-  . '<link rel="alternate" '
-  . 'type="application/rss+xml" '
-  . 'title="News" '
-  . 'href="https://oddmuse.org/wiki?action=journal" />'
-  . '<link rel="alternate" '
-  . 'type="application/rss+xml" '
-  . 'title="Referrers" '
-  . 'href="https://oddmuse.org/wiki?action=refer-rss" />'
-  . '<link rel="alternate" '
-  . 'type="application/atom+xml" '
-  . 'title="Source" '
-  . 'href="https://git.savannah.gnu.org/cgit/oddmuse.git/atom/?h=master" />';
+	   . 'type="application/rss+xml" '
+	   . 'title="RecentChanges" '
+	   . 'href="https://oddmuse.org/wiki?action=rss" />'
+	   . '<link rel="alternate" '
+	   . 'type="application/rss+xml" '
+	   . 'title="News" '
+	   . 'href="https://oddmuse.org/wiki?action=journal" />'
+	   . '<link rel="alternate" '
+	   . 'type="application/rss+xml" '
+	   . 'title="Referrers" '
+	   . 'href="https://oddmuse.org/wiki?action=refer-rss" />'
+	   . '<link rel="alternate" '
+	   . 'type="application/atom+xml" '
+	   . 'title="Source" '
+	   . 'href="https://git.savannah.gnu.org/cgit/oddmuse.git/atom/?h=master" />';
        # http://www.emacswiki.org/cgi-bin/changelog-to-rss?url=http://www.emacswiki.org/oddmuse/ChangeLog;pattern=http://savannah.nongnu.org/cgi-bin/viewcvs/oddmuse/oddmuse/
        my $id = GetId();
        $HtmlHeaders .= '<link rel="alternate" '
-  . 'type="application/rss+xml" '
-  . 'title="Changes for ' . NormalToFree($id) . '" '
-  . 'href="https://oddmuse.org/wiki?action=rss;match=%5E'
-  . UrlEncode(FreeToNormal($id)) . '%24" />' if $id;
+	   . 'type="application/rss+xml" '
+	   . 'title="Changes for ' . NormalToFree($id) . '" '
+	   . 'href="https://oddmuse.org/wiki?action=rss;match=%5E'
+	   . UrlEncode(FreeToNormal($id)) . '%24" />' if $id;
        my $username = GetParam('username', '');
        $HtmlHeaders .= '<link rel="alternate" '
-  . 'type="application/rss+xml" '
-  . 'title="Follow-ups for ' . NormalToFree($username) . '" '
-  . 'href="https://oddmuse.org/wiki?action=rss;followup='
-  . UrlEncode($username) . '" />' if $username;
+	   . 'type="application/rss+xml" '
+	   . 'title="Follow-ups for ' . NormalToFree($username) . '" '
+	   . 'href="https://oddmuse.org/wiki?action=rss;followup='
+	   . UrlEncode($username) . '" />' if $username;
        # toc-js.pl
        $TocOutlineLibrary = '/outliner.min.js';
-       $HtmHeaders . TocScript();
      });
 $InterMap = 'Local Intermap';
 $UploadAllowed = 1;
