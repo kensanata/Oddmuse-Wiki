@@ -55,7 +55,7 @@ $CookieName  = "Oddmuse";
 $SiteName    = "Oddmuse";
 $HomePage    = "Main_Page";
 $RCName      = "RecentChanges";
-$LogoUrl     = "https://www.oddmuse.org/pics/oddmuse-logo.png";
+$LogoUrl     = "https://oddmuse.org/pics/oddmuse-logo.png";
 $StyleSheet  = "https://oddmuse.org/default.css";
 @UserGotoBarPages = ($HomePage, 'About', 'News', 'Upgrading Issues', 'Errors', 'Source', 'Development', $RCName, 'Site Map');
 $UserGotoBar = '<a title="RSS 1.0" href="/wiki?action=rss"><span style="border:1px solid;border-color:#FC9 #630 #330 #F96;padding:0 3px;font:bold 10px verdana,sans-serif;color:#FFF;background:#F60;text-decoration:none;margin:0;">RSS</span></a>';
@@ -133,3 +133,30 @@ sub MyRules {
 );
 
 $QuestionaskerSecretKey = 'ham';
+
+# As we're now behind a caching proxy, the environment variable
+# REMOTE_ADDR is no longer what we want. We now want
+# HTTP_X_FORWARDED_FOR.
+
+$ENV{REMOTE_ADDR} = $ENV{HTTP_X_FORWARDED_FOR};
+
+# As we're running within Mojolicious::Plugin::GGI, $q->path_info is not encoded
+# reliably.
+
+sub GetId {
+  my $id = UnquoteHtml(GetParam('id', GetParam('title', ''))); # id=x or title=x -> x
+  if (not $id and $q->keywords) {
+    $id = decode_utf8(join('_', $q->keywords)); # script?p+q -> p_q
+  }
+  if ($UsePathInfo and $q->path_info) {
+    use Encode qw(decode);
+    my $path_info = decode_utf8($q->path_info);
+    $path_info = decode("iso-8859-1", $q->path_info) if index($path_info, "\x{fffd}") >= 0;
+    my @path = split(/\//, $path_info);
+    $id ||= pop(@path); # script/p/q -> q
+    foreach my $p (@path) {
+      SetParam($p, 1);    # script/p/q -> p=1
+    }
+  }
+  return $id;
+}
