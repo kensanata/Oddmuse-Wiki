@@ -29,7 +29,7 @@ use v5.10;
 
 our ($q, $Now, %Page, $OpenPageName, %Action, $UrlPattern, $BannedContent, $BannedHosts, @MyAdminCode);
 
-AddModuleDescription('ban-contributors.pl', 'Ban Contributors Extension', undef, '2.3.7-56-g90d44bf');
+AddModuleDescription('ban-contributors.pl', 'Ban Contributors Extension', undef, '2.3.11-14-g27156d64');
 
 push(@MyAdminCode, \&BanMenu);
 
@@ -253,4 +253,6 @@ sub get_regexp_ip {
   return $regexp;
 }
 
+# this is required in case we concatenate other modules to this one
 package OddMuse;
+

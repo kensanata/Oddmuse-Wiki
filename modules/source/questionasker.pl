@@ -17,7 +17,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('questionasker.pl', 'QuestionAsker Extension', undef, '2.3.7-56-g90d44bf');
+AddModuleDescription('questionasker.pl', 'QuestionAsker Extension', undef, '2.3.11-14-g27156d64');
 
 our ($q, $bol, $FreeLinks, $FreeLinkPattern, $LinkPattern, $WikiLinks,
      @MyInitVariables, %AdminPages, %CookieParameters, @MyFormChanges);

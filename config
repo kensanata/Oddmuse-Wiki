@@ -7,6 +7,9 @@ $ENV{PATH} = '/bin:/usr/bin';
 $WikiLinks   = 0;
 $BracketWiki = 1;
 $NetworkFile = 0;
+$MatchingPages = 1;
+$InstanceThrottleLimit = 10;
+$Translate{'Filter:'} = 'Find Page:';
 $CommentsPrefix = 'Comments_on_';
 $BannedContent = 'Local Banned Content';
 $BannedRegexps = 'Local Banned Regexps';
@@ -54,7 +57,7 @@ $CookieName  = "Oddmuse";
 $SiteName    = "Oddmuse";
 $HomePage    = "Main_Page";
 $RCName      = "RecentChanges";
-$LogoUrl     = "https://oddmuse.org/pics/oddmuse-logo.png";
+$LogoUrl     = "https://oddmuse.org/pics/oddmuse-logo2.png";
 $StyleSheet  = "https://oddmuse.org/default.css";
 @UserGotoBarPages = ($HomePage, 'About', 'News', 'Upgrading Issues', 'Errors', 'Source', 'Development', $RCName, 'Site Map');
 $UserGotoBar = '<a title="RSS 1.0" href="/wiki?action=rss"><span style="border:1px solid;border-color:#FC9 #630 #330 #F96;padding:0 3px;font:bold 10px verdana,sans-serif;color:#FFF;background:#F60;text-decoration:none;margin:0;">RSS</span></a>';
@@ -64,7 +67,7 @@ $RcDefault   = 28;
 $KeepDays    = 28;
 
 $RefererTimeLimit = 60 * 60 * 24 * 7;
-$StaticDir = '/home/alex/oddmuse.org/static';
+# $StaticDir = '/home/alex/oddmuse.org/static';
 
 $Smilies{quotemeta(':)')} = $Smilies{quotemeta(':-)')};
 $Smilies{quotemeta(':(')} = $Smilies{quotemeta(':-(')};
@@ -110,6 +113,8 @@ sub MyRules {
 		   . GetPermanentAnchor($name));
     }
     return '';
+  } elsif ($bol and m/\G'''\n/gc) {
+    return AddOrCloseHtmlEnvironment('blockquote');
   } elsif (m/\G::/gc) {
     return '::';
   }

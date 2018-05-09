@@ -18,7 +18,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('finnish-utf8.pl', 'Finnish', 'translations/', '2.3.7-56-g90d44bf') if defined &AddModuleDescription;
+AddModuleDescription('finnish-utf8.pl', 'Finnish', 'translations/', '2.3.11-14-g27156d64') if defined &AddModuleDescription;
 
 our %Translate = grep(!/^#/, split(/\n/,<<'END_OF_TRANSLATION'));
 ################################################################################

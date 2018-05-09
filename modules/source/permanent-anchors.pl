@@ -16,7 +16,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('permanent-anchors.pl', 'Permanent Anchors', undef, '2.3.7-56-g90d44bf');
+AddModuleDescription('permanent-anchors.pl', 'Permanent Anchors', undef, '2.3.11-14-g27156d64');
 
 our ($q, $OpenPageName, %IndexHash, $DataDir, $ScriptName, @MyRules, @MyInitVariables, $FS, $FreeLinkPattern, @IndexOptions);
 
@@ -86,6 +86,7 @@ sub PermanentAnchorsRule {
     } else {
       print $q->span({-class=>'permanentanchor'}, $2);
     }
+    return '';
   }
   return;
 }
