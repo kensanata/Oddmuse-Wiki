@@ -15,7 +15,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('div-foo.pl', 'Div Foo Extension', undef, '2.3.11-14-g27156d64');
+AddModuleDescription('div-foo.pl', 'Div Foo Extension', undef, '2.3.13-13-g8819183b');
 
 our (@MyRules);
 our ($DivFooPrefix);

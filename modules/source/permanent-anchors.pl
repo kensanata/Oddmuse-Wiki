@@ -16,7 +16,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('permanent-anchors.pl', 'Permanent Anchors', undef, '2.3.11-14-g27156d64');
+AddModuleDescription('permanent-anchors.pl', 'Permanent Anchors', undef, '2.3.13-13-g8819183b');
 
 our ($q, $OpenPageName, %IndexHash, $DataDir, $ScriptName, @MyRules, @MyInitVariables, $FS, $FreeLinkPattern, @IndexOptions);
 

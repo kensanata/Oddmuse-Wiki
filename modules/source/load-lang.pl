@@ -16,7 +16,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('load-lang.pl', 'Language Browser Preferences', undef, '2.3.11-14-g27156d64');
+AddModuleDescription('load-lang.pl', 'Language Browser Preferences', undef, '2.3.13-13-g8819183b');
 
 our ($q, %CookieParameters, $ConfigFile, $DataDir, $ModuleDir, $NamespaceCurrent, @MyInitVariables);
 our $CurrentLanguage;

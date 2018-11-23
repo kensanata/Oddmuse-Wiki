@@ -16,7 +16,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('image.pl', 'Image Extension', undef, '2.3.11-14-g27156d64');
+AddModuleDescription('image.pl', 'Image Extension', undef, '2.3.13-13-g8819183b');
 
 our ($q, @MyRules, $FullUrlPattern, $FreeLinkPattern, $FreeInterLinkPattern, %IndexHash, $ScriptName, $UsePathInfo, $Monolithic);
 our ($ImageUrlPath);

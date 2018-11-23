@@ -16,7 +16,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('markup.pl', 'Markup Extension', undef, '2.3.11-14-g27156d64');
+AddModuleDescription('markup.pl', 'Markup Extension', undef, '2.3.13-13-g8819183b');
 
 our ($q, $bol, @MyRules, %RuleOrder, @MyInitVariables);
 our (%MarkupPairs, %MarkupForcedPairs, %MarkupSingles, %MarkupLines,

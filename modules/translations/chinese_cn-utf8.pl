@@ -28,7 +28,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('chinese_cn-utf8.pl', 'Chinese', 'translations/', '2.3.11-14-g27156d64') if defined &AddModuleDescription;
+AddModuleDescription('chinese_cn-utf8.pl', 'Chinese', 'translations/', '2.3.13-13-g8819183b') if defined &AddModuleDescription;
 our $SiteName = '我的Wiki'; # Name of site (used for titles)
 our $HomePage = '首页'; # Home page
 our $NewText = "新页面内容\n"; # New page text

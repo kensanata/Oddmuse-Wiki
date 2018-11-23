@@ -29,7 +29,7 @@ use v5.10;
 
 our ($q, $Now, %Page, $OpenPageName, %Action, $UrlPattern, $BannedContent, $BannedHosts, @MyAdminCode);
 
-AddModuleDescription('ban-contributors.pl', 'Ban Contributors Extension', undef, '2.3.11-14-g27156d64');
+AddModuleDescription('ban-contributors.pl', 'Ban Contributors Extension', undef, '2.3.13-13-g8819183b');
 
 push(@MyAdminCode, \&BanMenu);
 

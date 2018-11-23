@@ -16,7 +16,7 @@ use strict;
 use v5.10;
 use utf8;
 
-AddModuleDescription('toc-js.pl', 'Javascript Table of Contents Extension', undef, '2.3.11-14-g27156d64');
+AddModuleDescription('toc-js.pl', 'Javascript Table of Contents Extension', undef, '2.3.13-13-g8819183b');
 
 our ($HtmlHeaders, @MyInitVariables);
 our ($TocOutlineLibrary);

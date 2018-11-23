@@ -1,4 +1,4 @@
-# Copyright (C) 2012  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2012-2018  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -15,7 +15,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('banned-regexps.pl', 'Banning Regular Expressions', undef, '2.3.11-14-g27156d64');
+AddModuleDescription('banned-regexps.pl', 'Banning Regular Expressions', undef, '2.3.13-13-g8819183b');
 
 =encoding utf8
 
@@ -62,9 +62,10 @@ push(@MyInitVariables, sub {
 
 sub RegexpNewBannedContent {
   my $str = shift;
-  # remove URLs as they are controlled by $BannedContent
-  $str =~ s/$FullUrlPattern//g;
+  # check whether Banned Content complains
   my $rule = RegexpOldBannedContent($str, @_);
+  # remove URLs as they have been checked by $BannedContent
+  $str =~ s/$FullUrlPattern//g;
   if (not $rule) {
     foreach (split(/\n/, GetPageContent($BannedRegexps))) {
       next unless m/^\s*([^#]+?)\s*(#\s*(\d\d\d\d-\d\d-\d\d\s*)?(.*))?$/;

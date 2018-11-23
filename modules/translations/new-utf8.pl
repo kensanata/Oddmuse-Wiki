@@ -18,7 +18,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('fixme-utf8.pl', 'Fixme', 'translations/', '2.3.11-14-g27156d64') if defined &AddModuleDescription;
+AddModuleDescription('fixme-utf8.pl', 'Fixme', 'translations/', '2.3.13-13-g8819183b') if defined &AddModuleDescription;
 
 our %Translate = grep(!/^#/, split(/\n/,<<'END_OF_TRANSLATION'));
 ################################################################################
@@ -529,6 +529,17 @@ Check whether the web server can create the directory %s and whether it can crea
 The two revisions are the same.
 
 ################################################################################
+# modules/translations.pl
+################################################################################
+This page is a translation of %s.
+
+The translation is up to date.
+
+The translation is outdated.
+
+The page does not exist.
+
+################################################################################
 # modules/weblog-1.pl
 ################################################################################
 Blog
@@ -553,6 +564,11 @@ Logout
 Alternatively, use one of the following templates:
 
 ################################################################################
+# modules/comment-div-wrapper.pl
+################################################################################
+Comments:
+
+################################################################################
 # modules/compilation.pl
 ################################################################################
 The match parameter is missing.
@@ -562,11 +578,37 @@ Compilation for %s
 Compilation tag is missing a regular expression.
 
 ################################################################################
+# modules/paragraph-link.pl
+################################################################################
+Permalink to "%s"
+
+anchor first defined here: %s
+
+the page %s also exists
+
+################################################################################
 # modules/list-banned-content.pl
 ################################################################################
 Banned Content
 
 Rule "%1" matched on this page.
+
+################################################################################
+# modules/localnames.pl
+################################################################################
+Define
+
+Name:
+
+URL:
+
+Define Local Names
+
+Define external redirect:
+
+ -- defined on %s
+
+Local names defined on %1: %2
 
 ################################################################################
 # modules/thumbs.pl
@@ -677,27 +719,6 @@ There was an error approving %s.
 There are no pending registrations.
 
 ################################################################################
-# modules/gd_security_image.pl
-################################################################################
-GD or Image::Magick modules not available.
-
-GD::SecurityImage module not available.
-
-Image storing failed. (%s)
-
-Bad gd_security_image_id.
-
-Please type the six characters from the anti-spam image
-
-Submit
-
-CAPTCHA
-
-You did not answer correctly.
-
-$GdSecurityImageFont is not set.
-
-################################################################################
 # modules/drafts.pl
 ################################################################################
 Recover Draft
@@ -758,11 +779,6 @@ Pages with changed HTML
 Preview changes in HTML output
 
 ################################################################################
-# modules/comment-div-wrapper.pl
-################################################################################
-Comments:
-
-################################################################################
 # modules/html-template.pl
 ################################################################################
 Could not find %1.html template in %2
@@ -817,23 +833,6 @@ October
 November
 
 December
-
-################################################################################
-# modules/ban-contributors.pl
-################################################################################
-Ban contributors
-
-Ban Contributors to %s
-
-Ban!
-
-Regular expression:
-
-%s is banned
-
-These URLs were rolled back. Perhaps you want to add a regular expression to %s?
-
-Consider banning the IP number as well:
 
 ################################################################################
 # modules/archive.pl
@@ -934,23 +933,6 @@ Copy one of the following stylesheets to %s:
 Reset
 
 ################################################################################
-# modules/localnames.pl
-################################################################################
-Define
-
-Name:
-
-URL:
-
-Define Local Names
-
-Define external redirect:
-
- -- defined on %s
-
-Local names defined on %1: %2
-
-################################################################################
 # modules/portrait-support.pl
 ################################################################################
 Portrait
@@ -976,7 +958,14 @@ The target wiki was misconfigured.
 ################################################################################
 # modules/questionasker.pl
 ################################################################################
+You did not answer correctly.
+
 To save this page you must answer this question:
+
+################################################################################
+# modules/orphans.pl
+################################################################################
+Orphan List
 
 ################################################################################
 # modules/commentcount.pl
@@ -1000,11 +989,6 @@ No dates found.
 Index
 
 ################################################################################
-# modules/aggregate.pl
-################################################################################
-Learn more...
-
-################################################################################
 # modules/banned-regexps.pl
 ################################################################################
 Regular expression "%1" matched "%2" on this page.
@@ -1019,6 +1003,25 @@ This error should not happen. If your password is set correctly and you are stil
 Attempt to read encrypted data without a password.
 
 Cannot refresh index.
+
+################################################################################
+# modules/gd_security_image.pl
+################################################################################
+GD or Image::Magick modules not available.
+
+GD::SecurityImage module not available.
+
+Image storing failed. (%s)
+
+Bad gd_security_image_id.
+
+Please type the six characters from the anti-spam image
+
+Submit
+
+CAPTCHA
+
+$GdSecurityImageFont is not set.
 
 ################################################################################
 # modules/links.pl
@@ -1040,11 +1043,6 @@ Set
 This page is password protected. If you know the password, you can %s. Once you have done that, return and reload this page.
 
 supply the password now
-
-################################################################################
-# modules/orphans.pl
-################################################################################
-Orphan List
 
 ################################################################################
 # modules/toc-headers.pl
@@ -1088,6 +1086,13 @@ Could not identify the paragraph you were editing
 This is the section you edited:
 
 This is the current page:
+
+################################################################################
+# modules/markdown-converter.pl
+################################################################################
+Help convert %s to Markdown
+
+Converting %s
 
 ################################################################################
 # modules/module-updater.pl
@@ -1197,11 +1202,21 @@ Wanted Pages
 %s, referenced from:
 
 ################################################################################
+# modules/today.pl
+################################################################################
+Create a new page for today
+
+################################################################################
 # modules/namespaces.pl
 ################################################################################
 %s is not a legal name for a namespace
 
 Namespaces
+
+################################################################################
+# modules/aggregate.pl
+################################################################################
+Learn more...
 
 ################################################################################
 # modules/diff.pl
@@ -1235,6 +1250,15 @@ Spammed pages
 # modules/small.pl
 ################################################################################
 Index of all small pages
+
+################################################################################
+# modules/weblog-3.pl
+################################################################################
+Matching pages:
+
+New
+
+Edit %s.
 
 ################################################################################
 # modules/all.pl
@@ -1495,10 +1519,6 @@ Pages link to %s
 ################################################################################
 # modules/weblog-4.pl
 ################################################################################
-New
-
-Matching pages:
-
 Tags:
 
 ################################################################################
@@ -1516,11 +1536,6 @@ The 404 handler extension requires the link data extension (links.pl).
 # modules/referrer-tracking.pl
 ################################################################################
 All Referrers
-
-################################################################################
-# modules/today.pl
-################################################################################
-Create a new page for today
 
 ################################################################################
 # modules/module-bisect.pl
@@ -1570,9 +1585,21 @@ Copy to %1 succeeded: %2.
 Copy to %1 failed: %2.
 
 ################################################################################
-# modules/weblog-3.pl
+# modules/ban-contributors.pl
 ################################################################################
-Edit %s.
+Ban contributors
+
+Ban Contributors to %s
+
+Ban!
+
+Regular expression:
+
+%s is banned
+
+These URLs were rolled back. Perhaps you want to add a regular expression to %s?
+
+Consider banning the IP number as well:
 
 ################################################################################
 # modules/lang.pl
@@ -1585,17 +1612,6 @@ Show!
 # modules/put.pl
 ################################################################################
 Upload is limited to %s bytes
-
-################################################################################
-# modules/translations.pl
-################################################################################
-This page is a translation of %s.
-
-The translation is up to date.
-
-The translation is outdated.
-
-The page does not exist.
 
 ################################################################################
 # modules/recaptcha.pl
@@ -1633,15 +1649,6 @@ Google +1 Buttons
 All Pages +1
 
 This page lists the twenty last diary entries and their +1 buttons.
-
-################################################################################
-# modules/paragraph-link.pl
-################################################################################
-Permalink to "%s"
-
-anchor first defined here: %s
-
-the page %s also exists
 
 ################################################################################
 # modules/open-proxy.pl

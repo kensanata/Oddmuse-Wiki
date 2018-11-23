@@ -20,7 +20,7 @@
 use utf8;
 use strict;
 
-AddModuleDescription('catalan-utf8.pl', 'Catalan', 'translations/', '2.3.11-14-g27156d64') if defined &AddModuleDescription;
+AddModuleDescription('catalan-utf8.pl', 'Catalan', 'translations/', '2.3.13-13-g8819183b') if defined &AddModuleDescription;
 
 our %Translate = grep(!/^#/, split(/\n/,<<'END_OF_TRANSLATION'));
 ################################################################################

@@ -1,4 +1,4 @@
-# Copyright (C) 2004–2014  Alex Schroeder <alex@gnu.org>
+# Copyright (C) 2004–2018  Alex Schroeder <alex@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('journal-rss.pl', 'Journal RSS Extension', undef, '2.3.11-14-g27156d64');
+AddModuleDescription('journal-rss.pl', 'Journal RSS Extension', undef, '2.3.13-13-g8819183b');
 
 our ($OpenPageName, $CollectingJournal, %Page, %Action, @MyInitVariables, $DeletedPage, %NearLinksException);
 $Action{journal} = \&DoJournalRss;
@@ -30,7 +30,34 @@ sub DoJournalRss {
   local $CollectingJournal = 1;
   # Fake the result of GetRcLines()
   local *GetRcLines = \&JournalRssGetRcLines;
+  local *RcSelfAction = \&JournalRssSelfAction;
+  local *RcPreviousAction = \&JournalRssPreviousAction;
+  local *RcLastAction = \&JournalRssLastAction;
+  SetParam('full', 1);
   print GetHttpHeader('application/xml') . GetRcRss();
+}
+
+sub JournalRssParameters {
+  my $more = '';
+  foreach (@_, qw(rsslimit match search reverse monthly)) {
+    my $val = GetParam($_, '');
+    $more .= ";$_=$val" if $val;
+  }
+  return $more;
+}
+
+sub JournalRssSelfAction {
+  return "action=journal" . JournalRssParameters(qw(offset));
+}
+
+sub JournalRssPreviousAction {
+  my $num = GetParam('rsslimit', 10);
+  my $offset = GetParam('offset', 0) + $num;
+  return "action=journal;offset=$offset" . JournalRssParameters();
+}
+
+sub JournalRssLastAction {
+  return "action=journal" . JournalRssParameters();
 }
 
 sub JournalRssGetRcLines {
@@ -39,6 +66,7 @@ sub JournalRssGetRcLines {
   my $search = GetParam('search', '');
   my $reverse = GetParam('reverse', 0);
   my $monthly = GetParam('monthly', 0);
+  my $offset = GetParam('offset', 0);
   my @pages = sort JournalSort (grep(/$match/, $search ? SearchTitleAndBody($search) : AllPagesList()));
   if ($monthly and not $match) {
     my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday) = gmtime();
@@ -48,28 +76,27 @@ sub JournalRssGetRcLines {
     @pages = reverse @pages;
   }
   # FIXME: Missing 'future' and 'past' keywords.
-  # FIXME: Do we need 'offset'? I don't think so.
   my @result = ();
+  my $n = 0;
   foreach my $id (@pages) {
     # Now save information required for saving the cache of the current page.
     local %Page;
     local $OpenPageName = '';
     OpenPage($id);
-    # If this is a minor edit, ignore it. Load the last major revision
-    # instead, if you can.
+    # If this is a minor edit, let's keep everything as it is, but show the date
+    # of the last major change, if possible. This is important for blogs that
+    # get added to a Planet. A minor change doesn't mean that the page needs to
+    # go to the front of the Planet.
     if ($Page{minor}) {
-      # Perhaps the old kept revision is gone due to $KeepMajor=0 or
-      # admin.pl or because a page was created as a minor change and
-      # never edited. Reading kept revisions in this case results in
-      # an error.
-      eval {
- 	%Page = GetKeptRevision($Page{lastmajor});
-      };
-      next if $@;
+      my %major = GetKeptRevision($Page{lastmajor});
+      $Page{ts} = $major{ts} if $major{ts};
     }
     next if $Page{text} =~ /^\s*$/; # only whitespace is also to be deleted
     next if $DeletedPage && substr($Page{text}, 0, length($DeletedPage))
-      eq $DeletedPage; # no regexp
+	eq $DeletedPage; # no regexp
+    # OK, this is a candidate page
+    $n++;
+    next if $n <= $offset;
     # Generate artifical rows in the list to pass to GetRcRss. We need
     # to open every single page, because the meta-data ordinarily
     # available in the rc.log file is not available to us. This is why
@@ -79,7 +106,7 @@ sub JournalRssGetRcLines {
     push (@result, [$Page{ts}, $id, $Page{minor}, $Page{summary}, $Page{host},
 		    $Page{username}, $Page{revision}, \@languages,
 		    GetCluster($Page{text})]);
-    last if $num ne 'all' and $#result + 1 >= $num;
+    last if @result >= $num;
   }
   return @result;
 }

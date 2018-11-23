@@ -17,7 +17,7 @@ use strict;
 use v5.10;
 use utf8;
 
-AddModuleDescription('pygmentize.pl', 'Pygmentize Extension', undef, '2.3.11-14-g27156d64');
+AddModuleDescription('pygmentize.pl', 'Pygmentize Extension', undef, '2.3.13-13-g8819183b');
 
 our ($q, $bol, @KnownLocks, %RuleOrder, @MyRules, $TempDir, @MyInitVariables);
 

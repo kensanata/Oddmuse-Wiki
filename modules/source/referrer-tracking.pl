@@ -14,7 +14,7 @@
 use strict;
 use v5.10;
 
-AddModuleDescription('referrer-tracking.pl', 'Automatic Link Back', undef, '2.3.11-14-g27156d64');
+AddModuleDescription('referrer-tracking.pl', 'Automatic Link Back', undef, '2.3.13-13-g8819183b');
 
 use LWP::UserAgent;
 
